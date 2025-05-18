@@ -1,4 +1,4 @@
-module blog-backend
+module backend
 
 go 1.21.10
 
