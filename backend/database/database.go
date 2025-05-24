@@ -5,10 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func Connect() (*sql.DB, error) {
-	jsonFile, err := os.Open("utils/config.json")
+	jsonFile, err := os.Open("../utils/config.json")
 	if err != nil {
 		return nil, fmt.Errorf("Unable to open file: %w", err)
 	}
@@ -19,14 +21,13 @@ func Connect() (*sql.DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse config: %w", err)
 	}
-	defer jsonFile.Close()
 	dbMap := data["database"].(map[string]interface{})
 	// data source name
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
 		dbMap["username"].(string),
 		dbMap["password"].(string),
 		dbMap["host"].(string),
-		dbMap["port"].(string),
+		dbMap["port"].(float64),
 		dbMap["name"].(string),
 	)
 	db, err := sql.Open("mysql", dsn)
