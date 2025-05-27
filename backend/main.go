@@ -3,6 +3,7 @@ package main
 import (
 	"backend/database"
 	"backend/routes"
+	"backend/services"
 	"fmt"
 	"log"
 
@@ -11,7 +12,8 @@ import (
 
 func main() {
 	db, err := database.Connect()
-
+	services.InitDB(db)
+	defer db.Close()
 	if err != nil {
 		log.Fatal("DB connection failed: ", err)
 	}

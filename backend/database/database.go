@@ -27,7 +27,7 @@ func Connect() (*sql.DB, error) {
 		dbMap["username"].(string),
 		dbMap["password"].(string),
 		dbMap["host"].(string),
-		dbMap["port"].(float64),
+		dbMap["port"].(string),
 		dbMap["name"].(string),
 	)
 	db, err := sql.Open("mysql", dsn)
