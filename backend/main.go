@@ -1,6 +1,7 @@
 package main
 
 import (
+	"backend/config"
 	"backend/database"
 	"backend/routes"
 	"backend/services"
@@ -11,6 +12,7 @@ import (
 )
 
 func main() {
+	config.LoadEnv()
 	db, err := database.Connect()
 	services.InitDB(db)
 	defer db.Close()

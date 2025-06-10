@@ -2,33 +2,40 @@ package database
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func Connect() (*sql.DB, error) {
-	jsonFile, err := os.Open("../utils/config.json")
-	if err != nil {
-		return nil, fmt.Errorf("Unable to open file: %w", err)
-	}
-	defer jsonFile.Close() // ensure file is closed when function exists
-	data := make(map[string]interface{})
+type DBConfig struct {
+	Username string
+	Password string
+	Host     string
+	Port     string
+	Name     string
+}
 
-	err = json.NewDecoder(jsonFile).Decode(&data)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse config: %w", err)
+func GetDBConfig() (DBConfig, error) {
+	obj := DBConfig{
+		Username: os.Getenv("DB_USERNAME"),
+		Password: os.Getenv("DB_PASSWORD"),
+		Host:     os.Getenv("DB_HOST"),
+		Port:     os.Getenv("DB_PORT"),
+		Name:     os.Getenv("DB_NAME"),
 	}
-	dbMap := data["database"].(map[string]interface{})
+	return obj, nil
+}
+func Connect() (*sql.DB, error) {
+
+	dbConfig, err := GetDBConfig()
 	// data source name
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
-		dbMap["username"].(string),
-		dbMap["password"].(string),
-		dbMap["host"].(string),
-		dbMap["port"].(string),
-		dbMap["name"].(string),
+		dbConfig.Username,
+		dbConfig.Password,
+		dbConfig.Host,
+		dbConfig.Port,
+		dbConfig.Name,
 	)
 	db, err := sql.Open("mysql", dsn)
 
