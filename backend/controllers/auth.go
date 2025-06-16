@@ -8,7 +8,6 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 func Login(c *gin.Context) {
@@ -45,11 +44,7 @@ func Register(c *gin.Context) {
 	if err != nil {
 		return
 	}
-	newUUID, err := uuid.NewRandom()
-	if err != nil {
-		log.Fatal("Failed to generate UUID: ", err)
-	}
-	uuidString := newUUID.String()
+	uuidString := services.GenerateUUID()
 	username := body["username"]
 	email := body["email"]
 	password := body["password"]
